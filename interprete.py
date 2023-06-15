@@ -2,7 +2,8 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 reserved = {
-    'agregar' : 'ADD'
+    'agregar' : 'ADD',
+    'eliminar' : 'DELETE'
 }
 
 tokens = [
@@ -16,6 +17,7 @@ tokens = [
 #El diccionario reserved tambien son tokens
 
 t_ADD = r'agregar'
+t_DELETE = r'eliminar'
 
 def t_INT(t):
     r'[0-9]+'
@@ -48,18 +50,20 @@ variables = {}
 def p_resultado(t):
     '''resultado : s STRING
         | s SSTRING '''
-    print("Esto es t[1] en p_resultado: ",t[1])
+
+    if(t[1] == 'agregar'):
+        add(t[2])
+    if(t[1] == 'eliminar'):
+        delete(t[2])
 
 def p_expr_num(t):
     's : INT'
     t[0] = t[1]
-    print("Esto es t[0] en p_expr_num: ", t[0])
 
 def p_expr_id(t):
     's : ID'
     try:
         t[0] = variables[t[1]]
-        print("Esto es t[0] en p_expr_id: ", t[0])
     except LookupError:
         print("Variable indefinida '%s'" % t[1])
         t[0] = 0
@@ -68,17 +72,29 @@ def p_expr_string(t):
     '''s : STRING 
         | SSTRING'''
     t[0] = t[1][1:-1]
-    print("Esto es t[0] en p_expr_string: ",t[0])
 
-def p_oper(t):
+def p_agregar(t):
     '''s : ADD'''
-    print("ESTO ES t[0] en p_oper: ",t[0])
+    t[0] = 'agregar'
+
+def p_eliminar(t):
+    '''s : DELETE'''
+    t[0] = 'eliminar'
 
 def p_error(t):
     print("ERROR")
 
 lexer = lex.lex()
 parser = yacc.yacc()
+
+personas = []
+def add(nombre): 
+    nombre = nombre.strip('"')
+    personas.append(nombre)
+
+def delete(nombre):
+    nombre = nombre.strip('"')
+    personas.remove(nombre)
 
 while True:
     try:
