@@ -77,6 +77,7 @@ def p_agregar(t):
     '''s : ADD'''
     t[0] = 'agregar'
 
+
 def p_eliminar(t):
     '''s : DELETE'''
     t[0] = 'eliminar'
@@ -90,11 +91,26 @@ parser = yacc.yacc()
 personas = []
 def add(nombre): 
     nombre = nombre.strip('"')
-    personas.append(nombre)
+
+    aux = {
+        "Nombre" : "",
+        "Admiracion" : 0,
+        "Amor" : 0,
+        "Cariño" : 0,
+        "Enojo" : 0,
+        "Envidia" : 0,
+        "Odio" : 0
+    }
+
+    aux["Nombre"] = nombre
+    personas.append(aux)
 
 def delete(nombre):
     nombre = nombre.strip('"')
-    personas.remove(nombre)
+
+    for i in personas:
+        if(i['Nombre'] == nombre):
+            personas.remove(i)
 
 while True:
     try:
@@ -102,6 +118,3 @@ while True:
     except EOFError:
         break
     parser.parse(data)
-
-#LexToken(INT,'3',1,0)
-#LexToken(Tipo de Token, token ingresado, linea en la que se escribio, en que posicion esta)
