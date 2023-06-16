@@ -3,21 +3,19 @@ import ply.yacc as yacc
 
 reserved = {
     'agregar' : 'ADD',
-    'eliminar' : 'DELETE'
+    'eliminar' : 'DELETE',
+    'actualizar' : 'UPDATE'
 }
 
 tokens = [
     'INT',
     'ID',
-    'STRING',
-    'SSTRING'
+    'STRING'
 ]+list(reserved.values())
-
-#Por cada token hay que tener una expresion regular que lo identifique 
-#El diccionario reserved tambien son tokens
 
 t_ADD = r'agregar'
 t_DELETE = r'eliminar'
+t_UPDATE = r'actualizar'
 
 def t_INT(t):
     r'[0-9]+'
@@ -30,13 +28,8 @@ def t_ID(t):
     return t
 
 def t_STRING(t):
-    r'\"(\s*\w*\s*)*\"' #Esto identifica expresiones del tipo "cualquier cosa"
+    r'\"(\s*\w*\s*)*\"' 
     t.type = reserved.get(t.value, 'STRING')
-    return t
-
-def t_SSTRING(t):
-    r'\'(\s*\w*\s*)*\'' #Esto identifica expresiones del tipo 'cualquiercosa'
-    t.type = reserved.get(t.value, 'SSTRING')
     return t
 
 t_ignore = ' \t'
@@ -48,13 +41,15 @@ def t_error(t):
 variables = {}
 
 def p_resultado(t):
-    '''resultado : s STRING
-        | s SSTRING '''
-
+    '''resultado : s STRING'''
     if(t[1] == 'agregar'):
         add(t[2])
-    if(t[1] == 'eliminar'):
+
+    elif(t[1] == 'eliminar'):
         delete(t[2])
+
+    elif(t[1] == 'actualizar'):
+        update(t[2])
 
 def p_expr_num(t):
     's : INT'
@@ -69,21 +64,23 @@ def p_expr_id(t):
         t[0] = 0
 
 def p_expr_string(t):
-    '''s : STRING 
-        | SSTRING'''
+    '''s : STRING '''
     t[0] = t[1][1:-1]
 
 def p_agregar(t):
     '''s : ADD'''
     t[0] = 'agregar'
 
-
 def p_eliminar(t):
     '''s : DELETE'''
     t[0] = 'eliminar'
 
+def p_update(t):
+    '''s : UPDATE'''
+    t[0] = 'actualizar'
+
 def p_error(t):
-    print("ERROR")
+    print("\033[91mERROR: Comando invalido\033[0m")
 
 lexer = lex.lex()
 parser = yacc.yacc()
@@ -105,12 +102,75 @@ def add(nombre):
     aux["Nombre"] = nombre
     personas.append(aux)
 
+    print("PERSONAS: ", personas) #este print esta por mientras para ver la lista personas
+
 def delete(nombre):
     nombre = nombre.strip('"')
 
     for i in personas:
         if(i['Nombre'] == nombre):
             personas.remove(i)
+    print("PERSONAS: ", personas) #este print esta por mientras para ver la lista personas
+
+def update(nombre):
+    nombre = nombre.strip('"')
+
+    found = False
+    pos = 0
+    for i in personas:
+        if(i['Nombre'] == nombre):
+                found = True
+                break
+        pos+=1
+
+    if(found):
+        print("Elegiste actualizar tu relacion con", nombre)
+        respuesta = input("¿Cuál de los siguientes sentimientos deseas cambiar?\n -Admiracion\n -Amor\n -Cariño\n -Enojo\n -Envidia\n -Odio\n")
+
+        #Muchos de los prints estan por mientras para ir chequeando como funciona el codigo !!
+        if(respuesta == 'admiracion'):
+            sentimiento = input("Ingresa el nivel de admiracion (0-100): ")
+            personas[pos]['Admiracion'] = sentimiento
+
+            print("ADMIRACION HACIA", nombre, "AHORA ESTA EN", sentimiento)
+            print(personas[pos])           
+
+        elif(respuesta == 'amor'):
+            sentimiento = input("Ingresa el nivel de amor (0-100): ")
+            personas[pos]['Amor'] = sentimiento
+
+            print("AMOR HACIA", nombre, "AHORA ESTA EN", sentimiento)
+            print(personas[pos])
+
+        elif(respuesta == 'cariño'):
+            sentimiento = input("Ingresa el nivel de cariño (0-100): ")
+            personas[pos]['Cariño'] = sentimiento
+
+            print("CARIÑO HACIA", nombre, "AHORA ESTA EN", sentimiento)
+            print(personas[pos])
+
+        elif(respuesta == 'enojo'):
+            sentimiento = input("Ingresa el nivel de enojo (0-100): ")
+            personas[pos]['Enojo'] = sentimiento
+
+            print("ENOJO HACIA", nombre, "AHORA ESTA EN", sentimiento)
+            print(personas[pos])
+
+        elif(respuesta == 'envidia'):
+            sentimiento = input("Ingresa el nivel de envidia (0-100): ")
+            personas[pos]['Envidia'] = sentimiento
+
+            print("ENVIDIA HACIA", nombre, "AHORA ESTA EN", sentimiento)
+            print(personas[pos])
+
+        elif(respuesta == 'odio'):
+            sentimiento = input("Ingresa el nivel de odio (0-100): ")
+            personas[pos]['Odio'] = sentimiento
+
+            print("ODIO HACIA", nombre, "AHORA ESTA EN", sentimiento)
+            print(personas[pos])
+    else:
+        print("\033[91mERROR: Persona no existe\033[0m")
 
 while True:
     try:
