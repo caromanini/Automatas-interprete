@@ -1,0 +1,123 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> resultado
+Rule 1     resultado -> s STRING
+Rule 2     s -> INT
+Rule 3     s -> ID
+Rule 4     s -> STRING
+Rule 5     s -> ADD
+Rule 6     s -> DELETE
+Rule 7     s -> UPDATE
+Rule 8     s -> RECAP
+
+Terminals, with rules where they appear
+
+ADD                  : 5
+DELETE               : 6
+ID                   : 3
+INT                  : 2
+RECAP                : 8
+STRING               : 1 4
+UPDATE               : 7
+error                : 
+
+Nonterminals, with rules where they appear
+
+resultado            : 0
+s                    : 1
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . resultado
+    (1) resultado -> . s STRING
+    (2) s -> . INT
+    (3) s -> . ID
+    (4) s -> . STRING
+    (5) s -> . ADD
+    (6) s -> . DELETE
+    (7) s -> . UPDATE
+    (8) s -> . RECAP
+
+    INT             shift and go to state 4
+    ID              shift and go to state 5
+    STRING          shift and go to state 3
+    ADD             shift and go to state 6
+    DELETE          shift and go to state 7
+    UPDATE          shift and go to state 8
+    RECAP           shift and go to state 9
+
+    resultado                      shift and go to state 1
+    s                              shift and go to state 2
+
+state 1
+
+    (0) S' -> resultado .
+
+
+
+state 2
+
+    (1) resultado -> s . STRING
+
+    STRING          shift and go to state 10
+
+
+state 3
+
+    (4) s -> STRING .
+
+    STRING          reduce using rule 4 (s -> STRING .)
+
+
+state 4
+
+    (2) s -> INT .
+
+    STRING          reduce using rule 2 (s -> INT .)
+
+
+state 5
+
+    (3) s -> ID .
+
+    STRING          reduce using rule 3 (s -> ID .)
+
+
+state 6
+
+    (5) s -> ADD .
+
+    STRING          reduce using rule 5 (s -> ADD .)
+
+
+state 7
+
+    (6) s -> DELETE .
+
+    STRING          reduce using rule 6 (s -> DELETE .)
+
+
+state 8
+
+    (7) s -> UPDATE .
+
+    STRING          reduce using rule 7 (s -> UPDATE .)
+
+
+state 9
+
+    (8) s -> RECAP .
+
+    STRING          reduce using rule 8 (s -> RECAP .)
+
+
+state 10
+
+    (1) resultado -> s STRING .
+
+    $end            reduce using rule 1 (resultado -> s STRING .)
+
